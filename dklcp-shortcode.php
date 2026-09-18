@@ -3,13 +3,15 @@
  * Plugin Name: List Child Pages Shortcode
  * Plugin URI: https://martech.zone/list-child-pages-shortcode/
  * Description: Provides a shortcode to list child pages on a parent page with an optional featured image and excerpt. Usage: [listchildpages ifempty="No child pages" orderby="publish_date" order="desc" displayimage="YES" align="alignleft" ulclass="" liclass="" aclass="" parent="current" size="thumbnail"]Here are our child pages:[/listchildpages]
- * Version: 1.4.1
+ * Version: 1.5.1
+ * Requires at least: 3.1
+ * Requires PHP: 7.4
  * Author: Douglas Karr
  * Author URI: https://dknewmedia.com/
  * License: GPL2
- * Text Domain: listchildpages-shortcode
+ * Text Domain: list-child-pages-shortcode
  *
- * Copyright 2019-2025 Douglas Karr
+ * Copyright 2019-2026 Douglas Karr
  *
  * @package ListChildPagesShortcode
  */
@@ -177,7 +179,7 @@ function dklcp_validate_image_size( $size ) {
  */
 function dklcp_listchildpages( $atts, $content = '' ) {
 	$defaults = array(
-		'ifempty'      => '<p>' . __( 'No Records', 'listchildpages-shortcode' ) . '</p>',
+		'ifempty'      => '<p>' . __( 'No Records', 'list-child-pages-shortcode' ) . '</p>',
 		'order'        => 'DESC',
 		'orderby'      => 'publish_date', // normalized below.
 		'ulclass'      => '',

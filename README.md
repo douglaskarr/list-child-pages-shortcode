@@ -15,7 +15,7 @@ composer install
 bash bin/ci_check.sh
 ```
 
-PHP 7.4+ is required for tooling. The plugin itself is a single file: `dklcp-shortcode.php`.
+PHP 8.1+ is required for tests and PHPCS. The plugin itself still runs on PHP 7.4+. The plugin file is `dklcp-shortcode.php`.
 
 Optional live WordPress environment (needs Docker + `@wordpress/env`):
 
@@ -33,7 +33,7 @@ npx wp-env start
 | `composer lint` | `php -l` on the plugin file |
 | `bash bin/ci_check.sh` | Lint, version-header check, tests, phpcs |
 
-GitHub Actions runs the same CI on PHP 7.4–8.3 and [Plugin Check](https://github.com/WordPress/plugin-check-action).
+GitHub Actions runs the same CI on PHP 8.1–8.3 and [Plugin Check](https://github.com/WordPress/plugin-check-action).
 
 ## Release workflow
 
@@ -66,11 +66,11 @@ bash bin/deploy.sh --commit # publish
 
 `.distignore` keeps GitHub/CI files out of the WordPress.org zip.
 
-## Current WordPress.org state (imported)
+## Current WordPress.org state
 
-Trunk on WordPress.org is **1.4.1**. The directory **Stable tag** is still **1.4.0**, so users currently download 1.4.0. A `tags/1.5.0` folder exists but its plugin header is still 1.4.1 and it is not the stable tag.
+Git `main` is **1.5.1** (not released yet). WordPress.org still serves **1.4.0** as the stable zip. Trunk on SVN is 1.4.1, and a `tags/1.5.0` folder exists with 1.4.1 headers.
 
-The plugin directory also warns that the plugin has not been tested with the latest 3 major WordPress releases (`Tested up to: 6.7.2` in `readme.txt`).
+Publishing 1.5.1 (GitHub Release + SVN secrets) is what updates the directory listing, search visibility (`Tested up to: 7.1`), and the download zip.
 
 ## Shortcode
 

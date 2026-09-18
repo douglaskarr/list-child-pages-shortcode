@@ -1,10 +1,11 @@
 === List Child Pages Shortcode ===
 Contributors: douglaskarr
 Tags: page, parent page, child page, shortcode
-Version: 1.4.1
-Stable tag: 1.4.0
-Tested up to: 6.7.2
-Requires at least: 3.0.1
+Version: 1.5.1
+Stable tag: 1.5.1
+Tested up to: 7.1
+Requires at least: 3.1
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://dknewmedia.com
@@ -86,6 +87,13 @@ There are additional class fields for the unordered list tag (ulclass), list ite
 
 == Changelog ==
 
+= 1.5.1 =
+* Align Version and Stable tag so WordPress.org serves the current code.
+* Declare compatibility with WordPress 7.1.
+* Raise minimum WordPress version to 3.1 (required by current APIs).
+* Match the text domain to the plugin slug for translations.
+* Keep default empty-state HTML out of the translatable string.
+
 = 1.4.1 =
 * Updated keywords for plugin
 
@@ -121,6 +129,9 @@ There are additional class fields for the unordered list tag (ulclass), list ite
 * Initial Release
 
 == Upgrade Notice ==
+
+= 1.5.1 =
+* Marks the plugin tested with WordPress 7.1 and aligns the stable version. No shortcode changes.
 
 = 1.4.0 =
 * New `parent` and `size` attributes. Backward-compatible. Please review usage examples.
