@@ -46,10 +46,12 @@ Readme or banner/icon/screenshot-only changes on `main` can go out without a new
 
 ### GitHub secrets (required before the first deploy)
 
-Repository secrets:
+Add these under the repo **Settings → Secrets and variables → Actions**:
 
 - `SVN_USERNAME` — WordPress.org username (`douglaskarr`)
 - `SVN_PASSWORD` — [SVN password](https://profiles.wordpress.org/me/profile/edit/group/3/?screen=svn-password), not the account login password
+
+Until `SVN_USERNAME` is set, the readme/assets workflow skips instead of failing. A GitHub Release will fail until both secrets exist — that is intentional so a tag cannot silently skip WordPress.org.
 
 The `gh` token used to push this repo needs the `workflow` scope the first time `.github/workflows/*` is added (`gh auth refresh -s workflow`).
 

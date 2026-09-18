@@ -9,6 +9,15 @@ jobs:
     name: Deploy to WP.org
     runs-on: ubuntu-latest
     steps:
+      - name: Check SVN credentials
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+        run: |
+          if [ -z "$SVN_USERNAME" ]; then
+            echo "Set repository secrets SVN_USERNAME and SVN_PASSWORD before releasing." >&2
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
 
       - name: WordPress Plugin Deploy
