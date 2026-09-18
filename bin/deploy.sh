@@ -58,6 +58,13 @@ fi
 
 bash "$ROOT/bin/ci_check.sh"
 
+PCP="$(cd "$ROOT/.." && pwd)/bin/run-plugin-check.sh"
+if [[ -x "$PCP" ]]; then
+	bash "$PCP" "$ROOT"
+else
+	fail "Plugin Check runner missing at $PCP. Do not publish without PCP."
+fi
+
 VERSION="$(php -r '
 $src = file_get_contents("dklcp-shortcode.php");
 preg_match("/^\s*\*\s*Version:\s*(.+)$/m", $src, $m);

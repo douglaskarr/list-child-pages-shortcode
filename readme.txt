@@ -3,7 +3,7 @@ Contributors: douglaskarr
 Tags: page, parent page, child page, shortcode
 Version: 1.5.1
 Stable tag: 1.5.1
-Tested up to: 7.1.1
+Tested up to: 7.1
 Requires at least: 3.1
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -93,7 +93,7 @@ Nothing in the database is stored or removed. The plugin has no settings, option
 
 = 1.5.1 =
 * Align Version and Stable tag so WordPress.org serves the current code.
-* Declare compatibility with WordPress 7.1.1.
+* Declare compatibility with WordPress 7.1.
 * Raise minimum WordPress version to 3.1 (required by current APIs).
 * Match the text domain to the plugin slug for translations.
 * Keep default empty-state HTML out of the translatable string.
@@ -138,7 +138,7 @@ Nothing in the database is stored or removed. The plugin has no settings, option
 == Upgrade Notice ==
 
 = 1.5.1 =
-* Marks the plugin tested with WordPress 7.1.1, aligns the stable version, and adds optional orderby/displayimage aliases without changing default output.
+* Marks the plugin tested with WordPress 7.1, aligns the stable version, and adds optional orderby/displayimage aliases without changing default output.
 
 = 1.4.0 =
 * New `parent` and `size` attributes. Backward-compatible. Please review usage examples.
