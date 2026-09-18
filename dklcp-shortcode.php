@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: List Child Pages Shortcode
- * Plugin URI: https://martech.zone/list-child-pages-shortcode/
+ * Plugin URI: https://martech.zone/wordpress-list-child-pages-plugin/
  * Description: Provides a shortcode to list child pages on a parent page with an optional featured image and excerpt. Usage: [listchildpages ifempty="No child pages" orderby="publish_date" order="desc" displayimage="YES" align="alignleft" ulclass="" liclass="" aclass="" parent="current" size="thumbnail"]Here are our child pages:[/listchildpages]
  * Version: 1.5.1
  * Requires at least: 3.1
@@ -69,26 +69,23 @@ function dklcp_normalize_order( $order ) {
  */
 function dklcp_normalize_orderby( $orderby ) {
 	$raw = strtolower( trim( (string) $orderby ) );
-	if ( 'publish_date' === $raw ) {
-		return 'date';
-	}
 
-	$allowed = array(
-		'date',
-		'title',
-		'name',
-		'modified',
-		'menu_order',
-		'post__in',
-		'ID',
-		'id',
+	$map = array(
+		'publish_date' => 'date',
+		'published'    => 'date',
+		'date'         => 'date',
+		'title'        => 'title',
+		'name'         => 'name',
+		'modified'     => 'modified',
+		'menu_order'   => 'menu_order',
+		'post__in'     => 'post__in',
+		'id'           => 'ID',
+		'rand'         => 'rand',
+		'type'         => 'type',
+		'author'       => 'author',
 	);
 
-	if ( 'id' === $raw ) {
-		return 'ID';
-	}
-
-	return in_array( $raw, $allowed, true ) ? $raw : 'date';
+	return isset( $map[ $raw ] ) ? $map[ $raw ] : 'date';
 }
 
 /**
@@ -168,7 +165,7 @@ function dklcp_validate_image_size( $size ) {
  * - order: ASC|DESC
  * - orderby: maps 'publish_date' -> 'date' if provided
  * - ulclass, liclass, aclass: space-delimited class lists (sanitized)
- * - displayimage: yes/no (y/yes/t/true/1 accepted)
+ * - displayimage: yes/no (y/yes/t/true/1/on accepted)
  * - align: image alignment class (sanitized)
  *
  * The enclosed content (between opening/closing shortcode) is allowed safe HTML.
@@ -202,7 +199,7 @@ function dklcp_listchildpages( $atts, $content = '' ) {
 	$align_class = dklcp_sanitize_class_list( $atts['align'] );
 	$size_key    = dklcp_validate_image_size( $atts['size'] );
 
-	$truthy     = array( 'y', 'yes', 't', 'true', '1', 1, true );
+	$truthy     = array( 'y', 'yes', 't', 'true', '1', 'on', 1, true );
 	$show_image = in_array( strtolower( (string) $atts['displayimage'] ), $truthy, true );
 
 	// Resolve the parent ID from attribute.
@@ -213,7 +210,7 @@ function dklcp_listchildpages( $atts, $content = '' ) {
 		return wp_kses_post( $atts['ifempty'] );
 	}
 
-	// Query child pages.
+	// Query child IDs so the shortcode does not take over the main Loop.
 	$q = new WP_Query(
 		array(
 			'post_type'           => 'page',
@@ -223,6 +220,7 @@ function dklcp_listchildpages( $atts, $content = '' ) {
 			'order'               => $order,
 			'no_found_rows'       => true,
 			'ignore_sticky_posts' => true,
+			'fields'              => 'ids',
 		)
 	);
 
@@ -231,7 +229,6 @@ function dklcp_listchildpages( $atts, $content = '' ) {
 	$ifempty_html = wp_kses_post( $atts['ifempty'] );
 
 	if ( ! $q->have_posts() ) {
-		wp_reset_postdata();
 		return $ifempty_html;
 	}
 
@@ -239,10 +236,8 @@ function dklcp_listchildpages( $atts, $content = '' ) {
 	$out .= $intro_html;
 	$out .= '<ul' . ( $ulclass ? ' class="' . esc_attr( $ulclass ) . '"' : '' ) . '>';
 
-	while ( $q->have_posts() ) {
-		$q->the_post();
-
-		$child_id    = get_the_ID();
+	foreach ( $q->posts as $child_id ) {
+		$child_id    = (int) $child_id;
 		$child_title = get_the_title( $child_id );
 		$child_link  = get_permalink( $child_id );
 
@@ -285,8 +280,6 @@ function dklcp_listchildpages( $atts, $content = '' ) {
 	}
 
 	$out .= '</ul>';
-
-	wp_reset_postdata();
 
 	/**
 	 * Filter the final HTML output of the listchildpages shortcode.

@@ -70,7 +70,7 @@ bash bin/deploy.sh --commit # publish
 
 Git `main` is **1.5.1** (not released yet). WordPress.org still serves **1.4.0** as the stable zip. Trunk on SVN is 1.4.1, and a `tags/1.5.0` folder exists with 1.4.1 headers.
 
-Publishing 1.5.1 (GitHub Release + SVN secrets) is what updates the directory listing, search visibility (`Tested up to: 7.1`), and the download zip.
+Publishing 1.5.1 (GitHub Release + SVN secrets) is what updates the directory listing, search visibility (`Tested up to: 7.1.1`), and the download zip.
 
 ## Shortcode
 

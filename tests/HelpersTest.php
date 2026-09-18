@@ -56,6 +56,10 @@ class HelpersTest extends TestCase {
 		$this->assertSame( 'title', dklcp_normalize_orderby( 'title' ) );
 		$this->assertSame( 'menu_order', dklcp_normalize_orderby( 'menu_order' ) );
 		$this->assertSame( 'ID', dklcp_normalize_orderby( 'id' ) );
+		$this->assertSame( 'date', dklcp_normalize_orderby( 'published' ) );
+		$this->assertSame( 'rand', dklcp_normalize_orderby( 'rand' ) );
+		$this->assertSame( 'author', dklcp_normalize_orderby( 'author' ) );
+		$this->assertSame( 'type', dklcp_normalize_orderby( 'type' ) );
 		$this->assertSame( 'date', dklcp_normalize_orderby( 'not-a-field' ) );
 	}
 

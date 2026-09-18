@@ -3,7 +3,7 @@ Contributors: douglaskarr
 Tags: page, parent page, child page, shortcode
 Version: 1.5.1
 Stable tag: 1.5.1
-Tested up to: 7.1
+Tested up to: 7.1.1
 Requires at least: 3.1
 Requires PHP: 7.4
 License: GPLv2 or later
@@ -22,8 +22,8 @@ The shortcode is `[listchildpages]...[/listchildpages]`. It accepts several attr
 
 * **ifempty**: Message or HTML to show if no child pages exist.
 * **order**: `ASC` or `DESC`. Default: `DESC`.
-* **orderby**: Field to order by. Default: `publish_date` (maps to `date`). Any valid `WP_Query` orderby value works.
-* **displayimage**: Show featured image (`yes|no`). Default: `no`.
+* **orderby**: Field to order by. Default: `publish_date` (maps to `date`). Also accepts `published` (maps to `date`), `title`, `name`, `modified`, `menu_order`, `ID`, `rand`, `type`, and `author`.
+* **displayimage**: Show featured image (`yes|no`). Also accepts `y`, `true`, `1`, and `on`. Default: `no`.
 * **align**: CSS class to apply to the image (`alignleft`, `alignright`, etc.).
 * **ulclass, liclass, aclass**: CSS classes for the list, list items, and links.
 * **parent**: ID, slug/path, or `current` to choose the parent page. Default: `current`.
@@ -80,6 +80,10 @@ Within your functions.php file, look for the add_theme_support post-thumbnails l
 
 There are additional class fields for the unordered list tag (ulclass), list item tag (liclass), and the anchor tag (aclass). You can modify the output utilizing your theme's CSS.
 
+= What happens if I deactivate or uninstall the plugin? =
+
+Nothing in the database is stored or removed. The plugin has no settings, options, custom tables, or uninstall routine. Deactivate or delete it and your pages, excerpts, and featured images stay as they are. Shortcodes left in content will simply stop rendering until the plugin is activated again.
+
 == Screenshots ==
 
 1. View of the shortcode.
@@ -89,10 +93,13 @@ There are additional class fields for the unordered list tag (ulclass), list ite
 
 = 1.5.1 =
 * Align Version and Stable tag so WordPress.org serves the current code.
-* Declare compatibility with WordPress 7.1.
+* Declare compatibility with WordPress 7.1.1.
 * Raise minimum WordPress version to 3.1 (required by current APIs).
 * Match the text domain to the plugin slug for translations.
 * Keep default empty-state HTML out of the translatable string.
+* Accept additional `orderby` values (`rand`, `type`, `author`) and the `published` alias.
+* Accept `on` as a truthy `displayimage` value.
+* Query child page IDs so the shortcode does not take over the main Loop. Default markup is unchanged.
 
 = 1.4.1 =
 * Updated keywords for plugin
@@ -131,7 +138,7 @@ There are additional class fields for the unordered list tag (ulclass), list ite
 == Upgrade Notice ==
 
 = 1.5.1 =
-* Marks the plugin tested with WordPress 7.1 and aligns the stable version. No shortcode changes.
+* Marks the plugin tested with WordPress 7.1.1, aligns the stable version, and adds optional orderby/displayimage aliases without changing default output.
 
 = 1.4.0 =
 * New `parent` and `size` attributes. Backward-compatible. Please review usage examples.
