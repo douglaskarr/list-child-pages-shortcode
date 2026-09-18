@@ -1,0 +1,81 @@
+# List Child Pages Shortcode
+
+WordPress shortcode `[listchildpages]` that lists child pages of a parent page, with optional featured images and excerpts.
+
+- WordPress.org: https://wordpress.org/plugins/list-child-pages-shortcode/
+- Support: https://wordpress.org/support/plugin/list-child-pages-shortcode/
+- SVN (releases only): https://plugins.svn.wordpress.org/list-child-pages-shortcode/
+
+This GitHub repository is the development copy. WordPress.org Subversion is the release channel. Do not use SVN for day-to-day commits.
+
+## Local setup
+
+```bash
+composer install
+bash bin/ci_check.sh
+```
+
+PHP 7.4+ is required for tooling. The plugin itself is a single file: `dklcp-shortcode.php`.
+
+Optional live WordPress environment (needs Docker + `@wordpress/env`):
+
+```bash
+npm install -g @wordpress/env
+npx wp-env start
+```
+
+## Tests and checks
+
+| Command | What it does |
+| --- | --- |
+| `composer test` | PHPUnit helper-function tests (no WordPress runtime) |
+| `composer phpcs` | WordPress Coding Standards |
+| `composer lint` | `php -l` on the plugin file |
+| `bash bin/ci_check.sh` | Lint, version-header check, tests, phpcs |
+
+GitHub Actions runs the same CI on PHP 7.4–8.3 and [Plugin Check](https://github.com/WordPress/plugin-check-action).
+
+## Release workflow
+
+1. Develop and test on a branch; merge to `main`.
+2. Bump **both** the `Version` header in `dklcp-shortcode.php` and `Version` / `Stable tag` in `readme.txt` to the same number. Add a changelog entry.
+3. Commit, then tag and publish a GitHub Release whose tag matches that version (`1.5.1`, not `v1.5.1`).
+4. `.github/workflows/deploy.yml` copies the tag into WordPress.org `trunk` and `tags/<version>`.
+
+Readme or banner/icon/screenshot-only changes on `main` can go out without a new plugin version via `.github/workflows/assets.yml`.
+
+### GitHub secrets (required before the first deploy)
+
+Repository secrets:
+
+- `SVN_USERNAME` — WordPress.org username (`douglaskarr`)
+- `SVN_PASSWORD` — [SVN password](https://profiles.wordpress.org/me/profile/edit/group/3/?screen=svn-password), not the account login password
+
+The `gh` token used to push this repo needs the `workflow` scope the first time `.github/workflows/*` is added (`gh auth refresh -s workflow`).
+
+### Local SVN deploy (optional)
+
+```bash
+export SVN_USERNAME=douglaskarr
+export SVN_PASSWORD='…'
+bash bin/deploy.sh          # dry run
+bash bin/deploy.sh --commit # publish
+```
+
+`.distignore` keeps GitHub/CI files out of the WordPress.org zip.
+
+## Current WordPress.org state (imported)
+
+Trunk on WordPress.org is **1.4.1**. The directory **Stable tag** is still **1.4.0**, so users currently download 1.4.0. A `tags/1.5.0` folder exists but its plugin header is still 1.4.1 and it is not the stable tag.
+
+The plugin directory also warns that the plugin has not been tested with the latest 3 major WordPress releases (`Tested up to: 6.7.2` in `readme.txt`).
+
+## Shortcode
+
+```
+[listchildpages ifempty="No child pages" orderby="publish_date" order="desc" displayimage="no" parent="current" size="thumbnail"]
+<h3>Here are our child pages:</h3>
+[/listchildpages]
+```
+
+Attributes: `ifempty`, `order`, `orderby`, `displayimage`, `align`, `ulclass`, `liclass`, `aclass`, `parent`, `size`.

@@ -1,0 +1,45 @@
+{
+  "name": "douglaskarr/list-child-pages-shortcode",
+  "description": "WordPress shortcode to list child pages of a parent page.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://wordpress.org/plugins/list-child-pages-shortcode/",
+  "authors": [
+    {
+      "name": "Douglas Karr",
+      "homepage": "https://dknewmedia.com/"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/douglaskarr/list-child-pages-shortcode/issues",
+    "source": "https://github.com/douglaskarr/list-child-pages-shortcode",
+    "forum": "https://wordpress.org/support/plugin/list-child-pages-shortcode/"
+  },
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.6",
+    "squizlabs/php_codesniffer": "^3.10",
+    "wp-coding-standards/wpcs": "^3.1",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "phpcompatibility/phpcompatibility-wp": "*"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "sort-packages": true
+  },
+  "scripts": {
+    "lint": "php -l dklcp-shortcode.php",
+    "phpcs": "phpcs",
+    "phpcbf": "phpcbf",
+    "test": "phpunit",
+    "ci": [
+      "@lint",
+      "@test",
+      "@phpcs"
+    ]
+  }
+}

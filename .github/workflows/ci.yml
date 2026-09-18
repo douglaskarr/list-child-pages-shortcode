@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  php:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.4', '8.1', '8.2', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer
+          coverage: none
+
+      - run: composer install --prefer-dist --no-progress
+
+      - name: Lint, tests, coding standards
+        run: bash bin/ci_check.sh
+
+  plugin-check:
+    name: Plugin Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: wordpress/plugin-check-action@v1
+        with:
+          exclude-directories: |
+            .wordpress-org
+            tests
+            bin
+            vendor
+            .github
+          exclude-checks: |
+            file_type
