@@ -32,7 +32,7 @@
     "sort-packages": true
   },
   "scripts": {
-    "lint": "php -l dklcp-shortcode.php",
+    "lint": "php -l dklcp-shortcode.php && php -l includes/legacy.php",
     "phpcs": "phpcs",
     "phpcbf": "phpcbf",
     "test": "phpunit",

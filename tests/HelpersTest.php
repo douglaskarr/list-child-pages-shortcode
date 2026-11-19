@@ -8,7 +8,7 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests for dklcp_* helpers.
+ * Tests for dknm_lcp_* helpers.
  */
 class HelpersTest extends TestCase {
 
@@ -30,51 +30,51 @@ class HelpersTest extends TestCase {
 	 * Sanitize class lists: drop invalid tokens, keep unique classes.
 	 */
 	public function test_sanitize_class_list() {
-		$this->assertSame( '', dklcp_sanitize_class_list( '' ) );
-		$this->assertSame( 'alignleft', dklcp_sanitize_class_list( 'alignleft' ) );
-		$this->assertSame( 'foo bar', dklcp_sanitize_class_list( " foo   bar  foo " ) );
-		$this->assertSame( 'ok scriptbad', dklcp_sanitize_class_list( 'ok <script>bad' ) );
-		$this->assertSame( '', dklcp_sanitize_class_list( '!!!' ) );
+		$this->assertSame( '', dknm_lcp_sanitize_class_list( '' ) );
+		$this->assertSame( 'alignleft', dknm_lcp_sanitize_class_list( 'alignleft' ) );
+		$this->assertSame( 'foo bar', dknm_lcp_sanitize_class_list( " foo   bar  foo " ) );
+		$this->assertSame( 'ok scriptbad', dknm_lcp_sanitize_class_list( 'ok <script>bad' ) );
+		$this->assertSame( '', dknm_lcp_sanitize_class_list( '!!!' ) );
 	}
 
 	/**
 	 * Order must be ASC or DESC; anything else falls back to DESC.
 	 */
 	public function test_normalize_order() {
-		$this->assertSame( 'ASC', dklcp_normalize_order( 'asc' ) );
-		$this->assertSame( 'DESC', dklcp_normalize_order( 'DESC' ) );
-		$this->assertSame( 'DESC', dklcp_normalize_order( 'sideways' ) );
-		$this->assertSame( 'DESC', dklcp_normalize_order( '' ) );
+		$this->assertSame( 'ASC', dknm_lcp_normalize_order( 'asc' ) );
+		$this->assertSame( 'DESC', dknm_lcp_normalize_order( 'DESC' ) );
+		$this->assertSame( 'DESC', dknm_lcp_normalize_order( 'sideways' ) );
+		$this->assertSame( 'DESC', dknm_lcp_normalize_order( '' ) );
 	}
 
 	/**
 	 * Legacy publish_date maps to date; id maps to ID; unknown values fall back.
 	 */
 	public function test_normalize_orderby() {
-		$this->assertSame( 'date', dklcp_normalize_orderby( 'publish_date' ) );
-		$this->assertSame( 'date', dklcp_normalize_orderby( 'date' ) );
-		$this->assertSame( 'title', dklcp_normalize_orderby( 'title' ) );
-		$this->assertSame( 'menu_order', dklcp_normalize_orderby( 'menu_order' ) );
-		$this->assertSame( 'ID', dklcp_normalize_orderby( 'id' ) );
-		$this->assertSame( 'date', dklcp_normalize_orderby( 'published' ) );
-		$this->assertSame( 'rand', dklcp_normalize_orderby( 'rand' ) );
-		$this->assertSame( 'author', dklcp_normalize_orderby( 'author' ) );
-		$this->assertSame( 'type', dklcp_normalize_orderby( 'type' ) );
-		$this->assertSame( 'date', dklcp_normalize_orderby( 'not-a-field' ) );
+		$this->assertSame( 'date', dknm_lcp_normalize_orderby( 'publish_date' ) );
+		$this->assertSame( 'date', dknm_lcp_normalize_orderby( 'date' ) );
+		$this->assertSame( 'title', dknm_lcp_normalize_orderby( 'title' ) );
+		$this->assertSame( 'menu_order', dknm_lcp_normalize_orderby( 'menu_order' ) );
+		$this->assertSame( 'ID', dknm_lcp_normalize_orderby( 'id' ) );
+		$this->assertSame( 'date', dknm_lcp_normalize_orderby( 'published' ) );
+		$this->assertSame( 'rand', dknm_lcp_normalize_orderby( 'rand' ) );
+		$this->assertSame( 'author', dknm_lcp_normalize_orderby( 'author' ) );
+		$this->assertSame( 'type', dknm_lcp_normalize_orderby( 'type' ) );
+		$this->assertSame( 'date', dknm_lcp_normalize_orderby( 'not-a-field' ) );
 	}
 
 	/**
 	 * Image size keys: core sizes pass; unknown keys fall back to thumbnail.
 	 */
 	public function test_validate_image_size() {
-		$this->assertSame( 'thumbnail', dklcp_validate_image_size( '' ) );
-		$this->assertSame( 'medium', dklcp_validate_image_size( 'medium' ) );
-		$this->assertSame( 'large', dklcp_validate_image_size( 'LARGE' ) );
-		$this->assertSame( 'full', dklcp_validate_image_size( 'full' ) );
-		$this->assertSame( 'thumbnail', dklcp_validate_image_size( 'not-a-size' ) );
+		$this->assertSame( 'thumbnail', dknm_lcp_validate_image_size( '' ) );
+		$this->assertSame( 'medium', dknm_lcp_validate_image_size( 'medium' ) );
+		$this->assertSame( 'large', dknm_lcp_validate_image_size( 'LARGE' ) );
+		$this->assertSame( 'full', dknm_lcp_validate_image_size( 'full' ) );
+		$this->assertSame( 'thumbnail', dknm_lcp_validate_image_size( 'not-a-size' ) );
 
 		$GLOBALS['dklcp_test_intermediate_sizes'] = array( 'hero' );
-		$this->assertSame( 'hero', dklcp_validate_image_size( 'hero' ) );
+		$this->assertSame( 'hero', dknm_lcp_validate_image_size( 'hero' ) );
 	}
 
 	/**
@@ -82,22 +82,22 @@ class HelpersTest extends TestCase {
 	 */
 	public function test_resolve_parent_current_context() {
 		$GLOBALS['dklcp_test_queried_id'] = 42;
-		$this->assertSame( 42, dklcp_resolve_parent_id( '' ) );
-		$this->assertSame( 42, dklcp_resolve_parent_id( 'current' ) );
-		$this->assertSame( 42, dklcp_resolve_parent_id( 'self' ) );
+		$this->assertSame( 42, dknm_lcp_resolve_parent_id( '' ) );
+		$this->assertSame( 42, dknm_lcp_resolve_parent_id( 'current' ) );
+		$this->assertSame( 42, dknm_lcp_resolve_parent_id( 'self' ) );
 
 		$GLOBALS['dklcp_test_queried_id'] = 0;
 		$GLOBALS['dklcp_test_current_post'] = (object) array(
 			'ID'        => 7,
 			'post_type' => 'page',
 		);
-		$this->assertSame( 7, dklcp_resolve_parent_id( 'current' ) );
+		$this->assertSame( 7, dknm_lcp_resolve_parent_id( 'current' ) );
 
 		$GLOBALS['dklcp_test_current_post'] = (object) array(
 			'ID'        => 8,
 			'post_type' => 'post',
 		);
-		$this->assertSame( 0, dklcp_resolve_parent_id( 'current' ) );
+		$this->assertSame( 0, dknm_lcp_resolve_parent_id( 'current' ) );
 	}
 
 	/**
@@ -113,9 +113,9 @@ class HelpersTest extends TestCase {
 			'post_type' => 'post',
 		);
 
-		$this->assertSame( 123, dklcp_resolve_parent_id( '123' ) );
-		$this->assertSame( 0, dklcp_resolve_parent_id( '99' ) );
-		$this->assertSame( 0, dklcp_resolve_parent_id( '404' ) );
+		$this->assertSame( 123, dknm_lcp_resolve_parent_id( '123' ) );
+		$this->assertSame( 0, dknm_lcp_resolve_parent_id( '99' ) );
+		$this->assertSame( 0, dknm_lcp_resolve_parent_id( '404' ) );
 	}
 
 	/**
@@ -127,7 +127,42 @@ class HelpersTest extends TestCase {
 			'post_type' => 'page',
 		);
 
-		$this->assertSame( 55, dklcp_resolve_parent_id( 'about/company' ) );
-		$this->assertSame( 0, dklcp_resolve_parent_id( 'missing' ) );
+		$this->assertSame( 55, dknm_lcp_resolve_parent_id( 'about/company' ) );
+		$this->assertSame( 0, dknm_lcp_resolve_parent_id( 'missing' ) );
+	}
+
+	/**
+	 * Without an explicit order, menu_order sorts ascending; other fields keep DESC.
+	 */
+	public function test_default_order() {
+		$this->assertSame( 'ASC', dknm_lcp_default_order( '', 'menu_order' ) );
+		$this->assertSame( 'DESC', dknm_lcp_default_order( '', 'date' ) );
+		$this->assertSame( 'DESC', dknm_lcp_default_order( 'desc', 'menu_order' ) );
+		$this->assertSame( 'ASC', dknm_lcp_default_order( 'asc', 'title' ) );
+	}
+
+	/**
+	 * menu_order gets a title tie-breaker; other fields pass through.
+	 */
+	public function test_query_orderby() {
+		$this->assertSame(
+			array(
+				'menu_order' => 'ASC',
+				'title'      => 'ASC',
+			),
+			dknm_lcp_query_orderby( 'menu_order', 'ASC' )
+		);
+		$this->assertSame( 'date', dknm_lcp_query_orderby( 'date', 'DESC' ) );
+	}
+
+	/**
+	 * 1.x function names still work.
+	 */
+	public function test_legacy_aliases() {
+		$this->assertSame( 'ASC', dklcp_normalize_order( 'asc' ) );
+		$this->assertSame( 'date', dklcp_normalize_orderby( 'publish_date' ) );
+		$this->assertSame( 'foo', dklcp_sanitize_class_list( 'foo' ) );
+		$this->assertTrue( function_exists( 'dklcp_listchildpages' ) );
+		$this->assertTrue( function_exists( 'dklcp_register_shortcode' ) );
 	}
 }

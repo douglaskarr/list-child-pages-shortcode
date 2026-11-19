@@ -10,6 +10,7 @@ fail() { echo "ERROR: $*" >&2; exit 1; }
 command -v php >/dev/null 2>&1 || fail "php is required"
 
 php -l dklcp-shortcode.php >/dev/null
+php -l includes/legacy.php >/dev/null
 
 header_version="$(php -r '
 $src = file_get_contents("dklcp-shortcode.php");
@@ -22,8 +23,8 @@ echo trim($m[1]);
 
 readme_version="$(php -r '
 $src = file_get_contents("readme.txt");
-if (!preg_match("/^Version:\s*(.+)$/m", $src, $m)) {
-  fwrite(STDERR, "Missing Version in readme.txt\n");
+if (!preg_match("/^Stable tag:\s*(.+)$/m", $src, $m)) {
+  fwrite(STDERR, "Missing Stable tag in readme.txt\n");
   exit(1);
 }
 echo trim($m[1]);
@@ -39,7 +40,7 @@ echo trim($m[1]);
 ')"
 
 if [[ "$header_version" != "$readme_version" ]]; then
-	fail "Plugin header Version ($header_version) does not match readme.txt Version ($readme_version)"
+	fail "Plugin header Version ($header_version) does not match readme.txt Stable tag ($readme_version)"
 fi
 
 echo "Version: $header_version"

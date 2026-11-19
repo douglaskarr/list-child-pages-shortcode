@@ -6,3 +6,6 @@ composer.phar
 /.svn-export/
 /.wp-env.override.json
 /node_modules/
+/build/
+*.zip
+._*

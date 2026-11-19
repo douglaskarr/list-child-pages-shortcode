@@ -1,15 +1,16 @@
 <?php
 /**
- * Plugin Name: List Child Pages Shortcode
- * Plugin URI: https://martech.zone/wordpress-list-child-pages-plugin/
- * Description: Provides a shortcode to list child pages on a parent page with an optional featured image and excerpt. Usage: [listchildpages ifempty="No child pages" orderby="publish_date" order="desc" displayimage="YES" align="alignleft" ulclass="" liclass="" aclass="" parent="current" size="thumbnail"]Here are our child pages:[/listchildpages]
- * Version: 1.5.1
- * Requires at least: 3.1
- * Requires PHP: 7.4
- * Author: Douglas Karr
- * Author URI: https://dknewmedia.com/
- * License: GPL2
- * Text Domain: list-child-pages-shortcode
+ * Plugin Name:       List Child Pages Shortcode
+ * Plugin URI:        https://martech.zone/wordpress-list-child-pages-plugin/
+ * Description:       List a page's child pages anywhere with the [listchildpages] shortcode, with optional featured images, excerpts, ordering, and CSS classes.
+ * Version:           1.6.0
+ * Requires at least: 4.6
+ * Requires PHP:      7.4
+ * Author:            DK New Media
+ * Author URI:        https://dknewmedia.com/
+ * License:           GPLv2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       list-child-pages-shortcode
  *
  * Copyright 2019-2026 Douglas Karr
  *
@@ -20,13 +21,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+define( 'DKNM_LCP_VERSION', '1.6.0' );
+define( 'DKNM_LCP_SHORTCODE', 'listchildpages' );
+define( 'DKNM_LCP_SHORTCODE_ALIAS', 'dknm_list_child_pages' );
+
 /**
  * Ensure 'excerpt' support on pages (run in a safe lifecycle hook).
  */
-function dklcp_init_support() {
+function dknm_lcp_init_support() {
 	add_post_type_support( 'page', 'excerpt' );
 }
-add_action( 'init', 'dklcp_init_support' );
+add_action( 'init', 'dknm_lcp_init_support' );
 
 /**
  * Sanitize a space-delimited list of CSS classes.
@@ -34,7 +39,7 @@ add_action( 'init', 'dklcp_init_support' );
  * @param string $class_list Raw class list, possibly multiple classes separated by whitespace.
  * @return string A sanitized, space-delimited class list.
  */
-function dklcp_sanitize_class_list( $class_list ) {
+function dknm_lcp_sanitize_class_list( $class_list ) {
 	$classes   = preg_split( '/\s+/', (string) $class_list, -1, PREG_SPLIT_NO_EMPTY );
 	$sanitized = array();
 
@@ -54,7 +59,7 @@ function dklcp_sanitize_class_list( $class_list ) {
  * @param string $order Raw order.
  * @return string Normalized order.
  */
-function dklcp_normalize_order( $order ) {
+function dknm_lcp_normalize_order( $order ) {
 	$order = strtoupper( trim( (string) $order ) );
 	return in_array( $order, array( 'ASC', 'DESC' ), true ) ? $order : 'DESC';
 }
@@ -67,7 +72,7 @@ function dklcp_normalize_order( $order ) {
  * @param string $orderby Raw orderby.
  * @return string Normalized orderby.
  */
-function dklcp_normalize_orderby( $orderby ) {
+function dknm_lcp_normalize_orderby( $orderby ) {
 	$raw = strtolower( trim( (string) $orderby ) );
 
 	$map = array(
@@ -89,6 +94,48 @@ function dklcp_normalize_orderby( $orderby ) {
 }
 
 /**
+ * Pick the sort direction.
+ *
+ * An explicit order attribute always wins. Without one, menu_order sorts
+ * ascending (the order set under Page Attributes) and everything else keeps
+ * the historical DESC default.
+ *
+ * @since 1.6.0
+ *
+ * @param string $order   Raw order attribute ('' when not supplied).
+ * @param string $orderby Normalized orderby.
+ * @return string ASC or DESC.
+ */
+function dknm_lcp_default_order( $order, $orderby ) {
+	if ( '' === trim( (string) $order ) ) {
+		return 'menu_order' === $orderby ? 'ASC' : 'DESC';
+	}
+	return dknm_lcp_normalize_order( $order );
+}
+
+/**
+ * Build the WP_Query orderby argument.
+ *
+ * Pages share menu_order 0 unless an order is set, so menu_order sorts add
+ * title as a stable tie-breaker.
+ *
+ * @since 1.6.0
+ *
+ * @param string $orderby Normalized orderby.
+ * @param string $order   ASC or DESC.
+ * @return string|array
+ */
+function dknm_lcp_query_orderby( $orderby, $order ) {
+	if ( 'menu_order' === $orderby ) {
+		return array(
+			'menu_order' => $order,
+			'title'      => 'ASC',
+		);
+	}
+	return $orderby;
+}
+
+/**
  * Resolve a parent page from shortcode attribute.
  *
  * Accepts:
@@ -100,7 +147,7 @@ function dklcp_normalize_orderby( $orderby ) {
  * @param string $parent_attr Raw parent attribute.
  * @return int Parent page ID or 0 if none.
  */
-function dklcp_resolve_parent_id( $parent_attr ) {
+function dknm_lcp_resolve_parent_id( $parent_attr ) {
 	$parent_attr = trim( (string) $parent_attr );
 
 	// Keywords for current context.
@@ -137,7 +184,7 @@ function dklcp_resolve_parent_id( $parent_attr ) {
  * @param string $size Raw size.
  * @return string Valid size key.
  */
-function dklcp_validate_image_size( $size ) {
+function dknm_lcp_validate_image_size( $size ) {
 	$size = sanitize_key( $size );
 	if ( '' === $size ) {
 		return 'thumbnail';
@@ -154,7 +201,7 @@ function dklcp_validate_image_size( $size ) {
 }
 
 /**
- * Shortcode callback: [listchildpages]
+ * Shortcode callback: [listchildpages] (alias: [dknm_list_child_pages]).
  *
  * New attributes:
  * - parent: numeric page ID, slug/path, or 'current'/'self' to use the current page. Default: 'current'.
@@ -162,7 +209,7 @@ function dklcp_validate_image_size( $size ) {
  *
  * Existing attributes (kept for backward compatibility):
  * - ifempty: string (HTML allowed; sanitized)
- * - order: ASC|DESC
+ * - order: ASC|DESC. Default DESC, or ASC when orderby is menu_order (1.6.0).
  * - orderby: maps 'publish_date' -> 'date' if provided
  * - ulclass, liclass, aclass: space-delimited class lists (sanitized)
  * - displayimage: yes/no (y/yes/t/true/1/on accepted)
@@ -174,10 +221,10 @@ function dklcp_validate_image_size( $size ) {
  * @param string       $content Enclosed shortcode content.
  * @return string
  */
-function dklcp_listchildpages( $atts, $content = '' ) {
+function dknm_lcp_listchildpages( $atts, $content = '' ) {
 	$defaults = array(
 		'ifempty'      => '<p>' . __( 'No Records', 'list-child-pages-shortcode' ) . '</p>',
-		'order'        => 'DESC',
+		'order'        => '',
 		'orderby'      => 'publish_date', // normalized below.
 		'ulclass'      => '',
 		'liclass'      => '',
@@ -188,22 +235,22 @@ function dklcp_listchildpages( $atts, $content = '' ) {
 		'size'         => 'thumbnail',
 	);
 
-	$atts = shortcode_atts( $defaults, $atts, 'listchildpages' );
+	$atts = shortcode_atts( $defaults, $atts, DKNM_LCP_SHORTCODE );
 
 	// Normalize and sanitize attributes.
-	$order       = dklcp_normalize_order( $atts['order'] );
-	$orderby     = dklcp_normalize_orderby( $atts['orderby'] );
-	$ulclass     = dklcp_sanitize_class_list( $atts['ulclass'] );
-	$liclass     = dklcp_sanitize_class_list( $atts['liclass'] );
-	$aclass      = dklcp_sanitize_class_list( $atts['aclass'] );
-	$align_class = dklcp_sanitize_class_list( $atts['align'] );
-	$size_key    = dklcp_validate_image_size( $atts['size'] );
+	$orderby     = dknm_lcp_normalize_orderby( $atts['orderby'] );
+	$order       = dknm_lcp_default_order( $atts['order'], $orderby );
+	$ulclass     = dknm_lcp_sanitize_class_list( $atts['ulclass'] );
+	$liclass     = dknm_lcp_sanitize_class_list( $atts['liclass'] );
+	$aclass      = dknm_lcp_sanitize_class_list( $atts['aclass'] );
+	$align_class = dknm_lcp_sanitize_class_list( $atts['align'] );
+	$size_key    = dknm_lcp_validate_image_size( $atts['size'] );
 
 	$truthy     = array( 'y', 'yes', 't', 'true', '1', 'on', 1, true );
 	$show_image = in_array( strtolower( (string) $atts['displayimage'] ), $truthy, true );
 
 	// Resolve the parent ID from attribute.
-	$parent_id = dklcp_resolve_parent_id( $atts['parent'] );
+	$parent_id = dknm_lcp_resolve_parent_id( $atts['parent'] );
 
 	// If we still don't have a parent, return ifempty safely.
 	if ( ! $parent_id ) {
@@ -216,7 +263,7 @@ function dklcp_listchildpages( $atts, $content = '' ) {
 			'post_type'           => 'page',
 			'posts_per_page'      => -1,
 			'post_parent'         => $parent_id,
-			'orderby'             => $orderby,
+			'orderby'             => dknm_lcp_query_orderby( $orderby, $order ),
 			'order'               => $order,
 			'no_found_rows'       => true,
 			'ignore_sticky_posts' => true,
@@ -281,39 +328,39 @@ function dklcp_listchildpages( $atts, $content = '' ) {
 
 	$out .= '</ul>';
 
+	$filtered_atts = array(
+		'order'        => $order,
+		'orderby'      => $orderby,
+		'ulclass'      => $ulclass,
+		'liclass'      => $liclass,
+		'aclass'       => $aclass,
+		'displayimage' => $show_image,
+		'align'        => $align_class,
+		'size'         => $size_key,
+	);
+
+	/** This filter is documented in includes/legacy.php */
+	$out = dknm_lcp_apply_legacy_html_filter( $out, $parent_id, $filtered_atts );
+
 	/**
-	 * Filter the final HTML output of the listchildpages shortcode.
+	 * Filter the final HTML output of the shortcode.
 	 *
-	 * @since 1.3.2
-	 * @since 1.4.0 Added $size to the filtered args.
+	 * @since 1.6.0
 	 *
 	 * @param string $out       The generated HTML.
 	 * @param int    $parent_id The parent page ID.
 	 * @param array  $atts      The normalized shortcode atts.
 	 */
-	$out = apply_filters(
-		'dklcp/listchildpages/html', // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores -- existing public filter.
-		$out,
-		$parent_id,
-		array(
-			'order'        => $order,
-			'orderby'      => $orderby,
-			'ulclass'      => $ulclass,
-			'liclass'      => $liclass,
-			'aclass'       => $aclass,
-			'displayimage' => $show_image,
-			'align'        => $align_class,
-			'size'         => $size_key,
-		)
-	);
-
-	return $out;
+	return apply_filters( 'dknm_lcp_html', $out, $parent_id, $filtered_atts );
 }
 
 /**
  * Register shortcode on init.
  */
-function dklcp_register_shortcode() {
-	add_shortcode( 'listchildpages', 'dklcp_listchildpages' );
+function dknm_lcp_register_shortcode() {
+	add_shortcode( DKNM_LCP_SHORTCODE, 'dknm_lcp_listchildpages' );
+	add_shortcode( DKNM_LCP_SHORTCODE_ALIAS, 'dknm_lcp_listchildpages' );
 }
-add_action( 'init', 'dklcp_register_shortcode' );
+add_action( 'init', 'dknm_lcp_register_shortcode' );
+
+require_once __DIR__ . '/includes/legacy.php';
