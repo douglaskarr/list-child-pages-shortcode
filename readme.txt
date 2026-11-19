@@ -4,7 +4,7 @@ Tags: child pages, subpages, page list, shortcode, parent page
 Requires at least: 4.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://dknewmedia.com/
@@ -38,34 +38,40 @@ The shortcode is `[listchildpages]...[/listchildpages]`. `[dknm_list_child_pages
 Examples:
 
 Example 1: Order the child pages by publish date in descending order:
-`[listchildpages aclass="" ifempty="No child pages" orderby="publish_date" order="desc" displayimage="no"]
-<h3>Here are our child pages:</h3>
-[/listchildpages]`
+
+    [listchildpages aclass="" ifempty="No child pages" orderby="publish_date" order="desc" displayimage="no"]
+    <h3>Here are our child pages:</h3>
+    [/listchildpages]
 
 Example 2: Order the child pages by title in ascending order with the page's featured image aligned left:
-`[listchildpages orderby="title" order="asc" displayimage="yes" align="alignleft"]
-<h3>Here are our child pages:</h3>
-[/listchildpages]`
+
+    [listchildpages orderby="title" order="asc" displayimage="yes" align="alignleft"]
+    <h3>Here are our child pages:</h3>
+    [/listchildpages]
 
 Example 3: Target a specific parent page by ID and use medium-sized images:
-`[listchildpages parent="123" displayimage="yes" size="medium"]
-<h3>Resources</h3>
-[/listchildpages]`
+
+    [listchildpages parent="123" displayimage="yes" size="medium"]
+    <h3>Resources</h3>
+    [/listchildpages]
 
 Example 4: Target a parent page by slug and show full-size featured images:
-`[listchildpages parent="about/company" displayimage="yes" size="full"]
-<h3>Team Sections</h3>
-[/listchildpages]`
+
+    [listchildpages parent="about/company" displayimage="yes" size="full"]
+    <h3>Team Sections</h3>
+    [/listchildpages]
 
 Example 5: Follow the page order set under Page Attributes:
-`[listchildpages orderby="menu_order"]
-<h3>Chapters</h3>
-[/listchildpages]`
+
+    [listchildpages orderby="menu_order"]
+    <h3>Chapters</h3>
+    [/listchildpages]
 
 Example 6: Explicitly set the parent as the current page and use large images:
-`[listchildpages parent="current" displayimage="yes" size="large"]
-<h3>Subpages</h3>
-[/listchildpages]`
+
+    [listchildpages parent="current" displayimage="yes" size="large"]
+    <h3>Subpages</h3>
+    [/listchildpages]
 
 = Developer filters =
 
@@ -116,6 +122,9 @@ Nothing in the database is stored or removed. The plugin has no settings, option
 2. The published list of child pages with featured images and excerpts (Twenty Twenty-Five, with a few lines of theme CSS for the thumbnails).
 
 == Changelog ==
+
+= 1.6.1 =
+* Readme: fix code example formatting on WordPress.org.
 
 = 1.6.0 =
 * Author is now DK New Media. The plugin name, slug, folder, main file, and `[listchildpages]` shortcode are unchanged.
@@ -170,6 +179,9 @@ Nothing in the database is stored or removed. The plugin has no settings, option
 * Initial Release
 
 == Upgrade Notice ==
+
+= 1.6.1 =
+Fixes code example formatting on the WordPress.org plugin page.
 
 = 1.6.0 =
 Fixes menu_order sorting. Existing shortcodes keep working.
