@@ -3,7 +3,7 @@
  * Plugin Name:       List Child Pages Shortcode
  * Plugin URI:        https://martech.zone/wordpress-list-child-pages-plugin/
  * Description:       List a page's child pages anywhere with the [listchildpages] shortcode, with optional featured images, excerpts, ordering, and CSS classes.
- * Version:           1.6.1
+ * Version:           1.6.2
  * Requires at least: 4.6
  * Requires PHP:      7.4
  * Author:            DK New Media
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DKNM_LCP_VERSION', '1.6.1' );
+define( 'DKNM_LCP_VERSION', '1.6.2' );
 define( 'DKNM_LCP_SHORTCODE', 'listchildpages' );
 define( 'DKNM_LCP_SHORTCODE_ALIAS', 'dknm_list_child_pages' );
 

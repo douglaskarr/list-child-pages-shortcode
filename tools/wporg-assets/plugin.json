@@ -1,0 +1,14 @@
+{
+  "slug": "list-child-pages-shortcode",
+  "name": "List Child Pages Shortcode",
+  "name_lines": [
+    "List Child Pages",
+    "Shortcode"
+  ],
+  "description": "List a page's child pages with one shortcode.",
+  "accent": [
+    "#0E5C45",
+    "#1D9B6C"
+  ],
+  "glyph": "pages"
+}
