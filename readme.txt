@@ -4,7 +4,7 @@ Tags: child pages, subpages, page list, shortcode, parent page
 Requires at least: 4.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://dknewmedia.com/
@@ -114,7 +114,7 @@ No. `[listchildpages]` and every attribute work as before. The only change in ou
 
 = What happens if I deactivate or uninstall the plugin? =
 
-Nothing in the database is stored or removed. The plugin has no settings, options, custom tables, or uninstall routine. Deactivate or delete it and your pages, excerpts, and featured images stay as they are. Shortcodes left in content will simply stop rendering until the plugin is activated again.
+The plugin stores nothing in the database. An uninstall.php file defensively removes any leftover `dknm_lcp_` or legacy `dklcp_` options or transients if they were ever created. Your pages, excerpts, and featured images are not changed. Shortcodes left in content will simply stop rendering until the plugin is activated again.
 
 == Screenshots ==
 
@@ -122,6 +122,10 @@ Nothing in the database is stored or removed. The plugin has no settings, option
 2. The published list of child pages with featured images and excerpts (Twenty Twenty-Five, with a few lines of theme CSS for the thumbnails).
 
 == Changelog ==
+
+= 1.6.2 =
+* New WordPress.org banner and animated icon, with a consistent DK layout and a "Developed by Martech Zone" badge.
+* Add uninstall.php to defensively remove any leftover plugin options or transients (the plugin does not store any).
 
 = 1.6.1 =
 * Readme: fix code example formatting on WordPress.org.
@@ -179,6 +183,9 @@ Nothing in the database is stored or removed. The plugin has no settings, option
 * Initial Release
 
 == Upgrade Notice ==
+
+= 1.6.2 =
+New WordPress.org banner and animated icon, and an uninstall.php cleanup routine. No shortcode changes.
 
 = 1.6.1 =
 Fixes code example formatting on the WordPress.org plugin page.
