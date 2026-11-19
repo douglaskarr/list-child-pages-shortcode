@@ -4,6 +4,7 @@
 /bin
 /tests
 /vendor
+/tools
 
 .distignore
 .editorconfig

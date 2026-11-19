@@ -23,9 +23,30 @@ FONTS = HERE / "fonts"
 
 # Banner geometry at 1544×500 (772 is exactly half).
 BANNER_W, BANNER_H = 1544, 500
-PAD = 64  # equal inset on all four sides
-GAP = 48  # space between text column and glyph tile
+PAD_Y = 64  # top/bottom inset — clears WP.org rounded corners
+# Horizontal inset is driven by social-card center crops. See README
+# "Safe zone". The banner is much wider than common previews, so those
+# crops keep the full height and trim the left and right.
+#   crop_width(aspect) = BANNER_H * aspect
+#   side_trim(aspect)  = (BANNER_W - crop_width) / 2
+#   1.91:1 Open Graph : 955 px wide, 294.5 px trimmed each side
+#   16:10  (~1.6:1)   : 800 px wide, 372   px trimmed each side  (primary)
+#   4:3               : 667 px wide, 438.7 px trimmed each side
+#   1:1               : 500 px wide, 522   px trimmed each side
+# All typography, the badge, and the glyph tile sit inside the 16:10 crop
+# plus a small inner pad so type is not flush against a crop edge. The
+# gradient and plus pattern still run to the full 1544×500 / 772×250 edges.
+SAFE_CROP_ASPECT = 16 / 10
+SAFE_INNER_PAD = 20  # breathing room inside the 16:10 crop
+PAD_X = round((BANNER_W - BANNER_H * SAFE_CROP_ASPECT) / 2 + SAFE_INNER_PAD)  # 392
+GAP = 32  # space between text column and glyph tile
+# Tile is slightly shorter than the padded height so the text column stays
+# readable. It is vertically centered in the padded box.
+TILE = 276
 MASTER_SCALE = 2  # render at 2×, then downscale
+TITLE_SIZE = 48  # ExtraBold, 1544-space; auto-shrinks if a line overflows
+TITLE_SIZE_MIN = 40
+DESC_SIZE = 20  # Medium, wraps to two lines when needed
 
 # Icon
 ICON_RX_RATIO = 48 / 256  # matches earlier DK icon.svg corner radius
@@ -52,7 +73,7 @@ PLUGINS = {
     },
     "dk-preview-and-feedback-for-posts": {
         "name": "DK Preview and Feedback for Posts",
-        "name_lines": ["DK Preview and Feedback", "for Posts"],
+        "name_lines": ["DK Preview", "and Feedback", "for Posts"],
         "description": "Share drafts. Collect notes. Get approval.",
         "accent": ["#0E5A54", "#1AA897"],
         "glyph": "feedback",
@@ -64,12 +85,26 @@ PLUGINS = {
         "accent": ["#7A3E0A", "#D4891A"],
         "glyph": "checklist",
     },
+    "dk-campaigns-for-collaborator": {
+        "name": "DK Campaigns for Collaborator",
+        "name_lines": ["DK Campaigns", "for Collaborator"],
+        "description": "Your Collaborator revenue, right on the dashboard.",
+        "accent": ["#0B4F6C", "#2BA3C7"],
+        "glyph": "partners",
+    },
     "list-child-pages-shortcode": {
         "name": "List Child Pages Shortcode",
         "name_lines": ["List Child Pages", "Shortcode"],
         "description": "List a page's child pages with one shortcode.",
         "accent": ["#0E5C45", "#1D9B6C"],
         "glyph": "pages",
+    },
+    "dk-newsletter-for-sendgrid": {
+        "name": "DK Newsletter for SendGrid",
+        "name_lines": ["DK Newsletter", "for SendGrid"],
+        "description": "Newsletters and campaigns, sent through your SendGrid account.",
+        "accent": ["#6B1E3A", "#E25C6A"],
+        "glyph": "mail",
     },
 }
 
@@ -557,12 +592,134 @@ def draw_glyph_pages(im: Image.Image, t: float) -> None:
         )
 
 
+
+def draw_glyph_mail(im: Image.Image, t: float) -> None:
+    """A closed envelope whose flap lifts as a paper plane launches."""
+    size = im.size[0]
+    s = _scale_box(size)
+    d = ImageDraw.Draw(im)
+
+    # Envelope body
+    left, top, right, bottom = 44 * s, 108 * s, 212 * s, 208 * s
+    _card(d, (left, top, right, bottom), 16 * s)
+    # Inner sheet
+    d.rounded_rectangle((58 * s, 128 * s, 198 * s, 190 * s), radius=8 * s, fill=(235, 228, 230, 255))
+    d.rounded_rectangle((70 * s, 142 * s, 160 * s, 154 * s), radius=4 * s, fill=(210, 196, 200, 255))
+    d.rounded_rectangle((70 * s, 162 * s, 140 * s, 174 * s), radius=4 * s, fill=(210, 196, 200, 255))
+
+    # Flap open amount: hold, open, hold, close.
+    if t < 0.12:
+        open_amt = 0.0
+    elif t < 0.40:
+        open_amt = ease_in_out((t - 0.12) / 0.28)
+    elif t < 0.68:
+        open_amt = 1.0
+    else:
+        open_amt = 1.0 - ease_in_out((t - 0.68) / 0.32)
+
+    # Closed flap is a triangle over the envelope. Open flap rises above it.
+    peak_y = (108 * s) - (70 * s * open_amt)
+    flap_color = (110, 28, 54, 255)
+    d.polygon(
+        [
+            (left + 8 * s, top + 8 * s),
+            ((left + right) / 2, peak_y),
+            (right - 8 * s, top + 8 * s),
+        ],
+        fill=flap_color,
+    )
+    # Flap highlight
+    d.polygon(
+        [
+            (left + 28 * s, top + 8 * s),
+            ((left + right) / 2, peak_y + 10 * s),
+            (right - 28 * s, top + 8 * s),
+        ],
+        fill=(226, 92, 106, 255),
+    )
+
+    # Paper plane: sits in the envelope, then flies up and right.
+    fly = 0.0
+    if t >= 0.22:
+        if t < 0.70:
+            fly = ease_in_out((t - 0.22) / 0.48)
+        else:
+            fly = 1.0
+    if fly < 0.08 and open_amt < 0.35:
+        return
+    x = 96 * s + 90 * s * fly
+    y = 128 * s - 92 * s * fly
+    # Simple paper-plane chevron
+    plane = [
+        (x, y + 10 * s),
+        (x + 46 * s, y),
+        (x + 16 * s, y + 16 * s),
+        (x + 10 * s, y + 28 * s),
+        (x + 16 * s, y + 16 * s),
+        (x, y + 10 * s),
+    ]
+    d.polygon(plane, fill=(255, 255, 255, 255))
+    d.line((x + 16 * s, y + 16 * s, x + 46 * s, y), fill=(110, 28, 54, 255), width=max(2, int(2.5 * s)))
+
+
+def draw_glyph_partners(im: Image.Image, t: float) -> None:
+    """Two people who move together, then a link appears between them."""
+    size = im.size[0]
+    s = _scale_box(size)
+    d = ImageDraw.Draw(im)
+
+    # Motion: hold apart, ease together, hold, ease apart.
+    if t < 0.12:
+        c = 0.0
+    elif t < 0.40:
+        c = ease_in_out((t - 0.12) / 0.28)
+    elif t < 0.68:
+        c = 1.0
+    elif t < 0.92:
+        c = 1.0 - ease_in_out((t - 0.68) / 0.24)
+    else:
+        c = 0.0
+
+    _card(d, (36 * s, 36 * s, 220 * s, 220 * s), 22 * s)
+
+    # Horizontal offset from center: apart at 52, together at 34 (design px).
+    spread = lerp(52, 34, c)
+    cy = 128 * s
+    navy = (11, 79, 108, 255)
+    cyan = (43, 163, 199, 255)
+    mid = (26, 120, 150, 255)
+
+    def person(cx, fill, head_fill):
+        hr = 22 * s
+        d.ellipse((cx - hr, cy - 62 * s, cx + hr, cy - 62 * s + 2 * hr), fill=head_fill)
+        body = (cx - 28 * s, cy - 14 * s, cx + 28 * s, cy + 62 * s)
+        d.rounded_rectangle(body, radius=28 * s, fill=fill)
+
+    left_x = 128 * s - spread * s
+    right_x = 128 * s + spread * s
+    person(left_x, navy, mid)
+    person(right_x, cyan, (90, 190, 210, 255))
+
+    # Link bar appears only when they are close enough (avoid mid-alpha dither).
+    if c >= 0.55:
+        y0, y1 = cy + 8 * s, cy + 22 * s
+        gap = (right_x - 28 * s) - (left_x + 28 * s)
+        if gap > 4 * s:
+            d.rounded_rectangle(
+                (left_x + 28 * s, y0, right_x - 28 * s, y1),
+                radius=7 * s,
+                fill=(11, 79, 108, 255),
+            )
+
+
 GLYPHS = {
     "toc": draw_glyph_toc,
     "sync": draw_glyph_sync,
     "feedback": draw_glyph_feedback,
     "checklist": draw_glyph_checklist,
     "pages": draw_glyph_pages,
+    "mail": draw_glyph_mail,
+    "partners": draw_glyph_partners,
 }
 
 
@@ -579,59 +736,138 @@ def render_glyph(glyph: str, size: int, t: float, bg: Image.Image | None = None)
 # Banner
 # ---------------------------------------------------------------------------
 
+def crop_side_trim(aspect: float, width: int = BANNER_W, height: int = BANNER_H) -> float:
+    """Pixels trimmed from each side of a full-height center crop."""
+    return (width - height * aspect) / 2.0
+
+
+def center_crop(im: Image.Image, aspect: float) -> Image.Image:
+    """Center-crop an image to the given width:height ratio."""
+    w, h = im.size
+    crop_w = min(w, int(round(h * aspect)))
+    crop_h = min(h, int(round(w / aspect)))
+    left = (w - crop_w) // 2
+    top = (h - crop_h) // 2
+    return im.crop((left, top, left + crop_w, top + crop_h))
+
+
+def text_width(draw: ImageDraw.ImageDraw, text: str, font_: ImageFont.FreeTypeFont) -> int:
+    box = draw.textbbox((0, 0), text, font=font_)
+    return box[2] - box[0]
+
+
+def wrap_text(draw: ImageDraw.ImageDraw, text: str, font_: ImageFont.FreeTypeFont, max_width: int) -> list[str]:
+    """Greedy word wrap. A single over-long word is kept on its own line."""
+    words = text.split()
+    if not words:
+        return [""]
+    lines: list[str] = []
+    current = words[0]
+    for word in words[1:]:
+        trial = f"{current} {word}"
+        if text_width(draw, trial, font_) <= max_width:
+            current = trial
+        else:
+            lines.append(current)
+            current = word
+    lines.append(current)
+    # Avoid a one-word orphan on the last line when we can pull a word down.
+    if len(lines) >= 2 and len(lines[-1].split()) == 1:
+        prev = lines[-2].split()
+        if len(prev) >= 2:
+            moved = prev[-1]
+            trial = f"{moved} {lines[-1]}"
+            if text_width(draw, trial, font_) <= max_width:
+                lines[-2] = " ".join(prev[:-1])
+                lines[-1] = trial
+    return lines
+
+
+def fit_title_lines(
+    draw: ImageDraw.ImageDraw,
+    lines: list[str],
+    max_width: int,
+    scale: int,
+) -> tuple[ImageFont.FreeTypeFont, list[str], int]:
+    """Pick an ExtraBold size that fits, then wrap any remaining overflow."""
+    size = TITLE_SIZE
+    fitted = list(lines)
+    while size >= TITLE_SIZE_MIN:
+        f = font("ExtraBold", size * scale)
+        if all(text_width(draw, line, f) <= max_width for line in fitted):
+            return f, fitted, size
+        size -= 1
+    f = font("ExtraBold", TITLE_SIZE_MIN * scale)
+    wrapped: list[str] = []
+    for line in fitted:
+        wrapped.extend(wrap_text(draw, line, f, max_width))
+    return f, wrapped, TITLE_SIZE_MIN
+
+
 def render_banner(cfg: dict) -> Image.Image:
     """Return a 1544×500 RGB banner, rendered at 2× and downscaled."""
     S = MASTER_SCALE
-    W, H, P = BANNER_W * S, BANNER_H * S, PAD * S
+    W, H = BANNER_W * S, BANNER_H * S
+    px, py = PAD_X * S, PAD_Y * S
+    tile = TILE * S
+    gap = GAP * S
     left = hex_rgb(cfg["accent"][0])
     right = hex_rgb(cfg["accent"][1])
     bg = gradient_horizontal((W, H), left, right)
     bg = add_plus_pattern(bg, origin=16 * S, step=36 * S, plus=5 * S, alpha=38)
 
-    # Content box
-    tile = H - 2 * P  # fills the padded height — equal top/bottom padding
-    text_right = W - P - tile - GAP * S
+    # Safe content box: thick left/right margins, 64px top/bottom.
+    text_left = px
+    text_right = W - px - tile - gap
+    text_width_px = text_right - text_left
 
-    # Text stack, top-aligned to the inset
     canvas = bg
     d = ImageDraw.Draw(canvas)
-    tx = P
-    ty = P
-    f_title = font("ExtraBold", 56 * S)
-    f_desc = font("Medium", 24 * S)
+    tx = text_left
+    ty = py
     title_gap = 8 * S
-    after_title = 18 * S
-    after_desc = 26 * S
+    after_title = 16 * S
+    desc_gap = 6 * S
+    after_desc = 22 * S
 
-    # Title
-    lines = cfg.get("name_lines") or [cfg["name"]]
+    raw_lines = cfg.get("name_lines") or [cfg["name"]]
+    f_title, title_lines, _title_size = fit_title_lines(d, raw_lines, text_width_px, S)
+
     y = ty
-    for i, line in enumerate(lines):
+    for i, line in enumerate(title_lines):
         d.text((tx, y), line, font=f_title, fill=(255, 255, 255, 255))
         bbox = d.textbbox((tx, y), line, font=f_title)
-        y = bbox[3] + (title_gap if i < len(lines) - 1 else 0)
+        y = bbox[3] + (title_gap if i < len(title_lines) - 1 else 0)
     y += after_title
-    d.text((tx, y), cfg["description"], font=f_desc, fill=(255, 255, 255, 230))
-    bbox = d.textbbox((tx, y), cfg["description"], font=f_desc)
-    y = bbox[3] + after_desc
+
+    f_desc = font("Medium", DESC_SIZE * S)
+    desc_lines = wrap_text(d, cfg["description"], f_desc, text_width_px)
+    for i, line in enumerate(desc_lines):
+        d.text((tx, y), line, font=f_desc, fill=(255, 255, 255, 230))
+        bbox = d.textbbox((tx, y), line, font=f_desc)
+        y = bbox[3] + (desc_gap if i < len(desc_lines) - 1 else 0)
+    y += after_desc
 
     # Badge below the description (render at 8× of 1544, then scale to 2×)
     badge = make_badge(scale=8)
     bw, bh = badge.size
     badge2x = badge.resize((round(bw / 4), round(bh / 4)), Image.Resampling.LANCZOS)
-    # Guard: badge must stay inside the text column and the padded box
-    max_x = int(text_right) - badge2x.size[0]
-    bx = min(tx, max(P, max_x if max_x > P else tx))
-    canvas.alpha_composite(badge2x, (tx, int(y)))
+    if badge2x.size[0] > text_width_px:
+        ratio = text_width_px / badge2x.size[0]
+        badge2x = badge2x.resize(
+            (int(badge2x.size[0] * ratio), int(badge2x.size[1] * ratio)),
+            Image.Resampling.LANCZOS,
+        )
+    canvas.alpha_composite(badge2x, (int(tx), int(y)))
 
-    # Glyph tile on the right, filling the padded height
-    tile_xy = (W - P - tile, P)
-    # Tile background: slightly lightened slice of the gradient
+    # Glyph tile on the right, vertically centered in the padded box
+    tile_x = W - px - tile
+    tile_y = py + ((H - 2 * py) - tile) // 2
     tile_bg = Image.new("RGBA", (tile, tile), (0, 0, 0, 0))
-    # Use a rounded light panel
     panel_color = blend(right, (255, 255, 255), 0.18) + (230,)
-    panel = rounded_rect((tile, tile), radius=int(48 * S), fill=panel_color)
-    # Inner slightly darker for depth? keep it simple and clean
+    # Corner radius scales with the slightly smaller tile (48/372 of old size).
+    radius = int(36 * S)
+    panel = rounded_rect((tile, tile), radius=radius, fill=panel_color)
     tile_bg.alpha_composite(panel)
     banner_t = {
         "toc": 0.50,
@@ -639,14 +875,15 @@ def render_banner(cfg: dict) -> Image.Image:
         "feedback": 0.50,
         "checklist": 0.70,
         "pages": 0.70,
+        "mail": 0.50,
+        "partners": 0.55,
     }.get(cfg["glyph"], 0.5)
     glyph = render_glyph(cfg["glyph"], tile, t=banner_t)
-    # Scale glyph with inset inside the tile
-    inset = int(28 * S)
+    inset = int(22 * S)
     inner = tile - 2 * inset
     glyph_r = glyph.resize((inner, inner), Image.Resampling.LANCZOS)
     tile_bg.alpha_composite(glyph_r, (inset, inset))
-    paste_rounded(canvas, tile_bg, (int(tile_xy[0]), int(tile_xy[1])), int(48 * S))
+    paste_rounded(canvas, tile_bg, (int(tile_x), int(tile_y)), radius)
 
     rgb = canvas.convert("RGB")
     return rgb.resize((BANNER_W, BANNER_H), Image.Resampling.LANCZOS)
@@ -778,10 +1015,11 @@ def load_config(path: Path | None, slug: str | None) -> tuple[str, dict]:
     return slug, dict(PLUGINS[slug])
 
 
-def render_one(slug: str, cfg: dict, out_dir: Path) -> None:
+def render_one(slug: str, cfg: dict, out_dir: Path, banners_only: bool = False) -> None:
     print(f"rendering {slug} -> {out_dir}")
     write_banners(cfg, out_dir)
-    render_icons(cfg, out_dir)
+    if not banners_only:
+        render_icons(cfg, out_dir)
     for p in sorted(out_dir.glob("banner-*")) + sorted(out_dir.glob("icon-*")):
         im = None
         extra = ""
@@ -800,16 +1038,17 @@ def main() -> None:
     ap.add_argument("--slug", help="built-in plugin slug")
     ap.add_argument("--all", action="store_true", help="render every built-in plugin")
     ap.add_argument("--out", type=Path, required=True, help="output directory")
+    ap.add_argument("--banners-only", action="store_true", help="skip animated GIF icons")
     args = ap.parse_args()
 
     if args.all:
         for slug, cfg in PLUGINS.items():
             dest = args.out / slug
-            render_one(slug, dict(cfg), dest)
+            render_one(slug, dict(cfg), dest, banners_only=args.banners_only)
         return
 
     slug, cfg = load_config(args.config, args.slug)
-    render_one(slug, cfg, args.out)
+    render_one(slug, cfg, args.out, banners_only=args.banners_only)
 
 
 if __name__ == "__main__":
