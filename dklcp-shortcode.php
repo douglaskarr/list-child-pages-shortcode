@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       DK List Child Pages Shortcode
+ * Plugin Name:       List Child Pages Shortcode
  * Plugin URI:        https://martech.zone/wordpress-list-child-pages-plugin/
  * Description:       List a page's child pages anywhere with the [listchildpages] shortcode, with optional featured images, excerpts, ordering, and CSS classes.
  * Version:           1.6.0

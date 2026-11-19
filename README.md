@@ -1,4 +1,4 @@
-# DK List Child Pages Shortcode
+# List Child Pages Shortcode
 
 WordPress shortcode `[listchildpages]` (alias `[dknm_list_child_pages]`) that lists child pages of a parent page, with optional featured images and excerpts.
 
@@ -68,7 +68,7 @@ bash bin/deploy.sh --commit # publish
 
 ## Current WordPress.org state
 
-WordPress.org serves **1.5.1**. Branch `release/1.6.0` prepares **1.6.0** (rename to DK List Child Pages Shortcode, `dknm_lcp_` prefix with `dklcp_` wrappers in `includes/legacy.php`, and the `orderby="menu_order"` fix). The slug, folder, main file `dklcp-shortcode.php`, and text domain stay the same so existing installs keep the plugin active on update.
+WordPress.org serves **1.5.1**. Branch `release/1.6.0` prepares **1.6.0** (author DK New Media, `dknm_lcp_` prefix with `dklcp_` wrappers in `includes/legacy.php`, and the `orderby="menu_order"` fix). The slug, folder, main file `dklcp-shortcode.php`, and text domain stay the same so existing installs keep the plugin active on update.
 
 Build a release zip with `bash bin/build.sh [output-dir]` (uses `.distignore`).
 

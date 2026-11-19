@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="DK List Child Pages Shortcode">
-	<description>WordPress coding standards for DK List Child Pages Shortcode.</description>
+<ruleset name="List Child Pages Shortcode">
+	<description>WordPress coding standards for List Child Pages Shortcode.</description>
 
 	<file>.</file>
 

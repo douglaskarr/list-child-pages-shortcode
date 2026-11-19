@@ -1,4 +1,4 @@
-=== DK List Child Pages Shortcode ===
+=== List Child Pages Shortcode ===
 Contributors: douglaskarr
 Tags: child pages, subpages, page list, shortcode, parent page
 Requires at least: 4.6
@@ -13,7 +13,7 @@ List a page's child pages anywhere with one shortcode, with optional featured im
 
 == Description ==
 
-DK List Child Pages Shortcode (formerly List Child Pages Shortcode) adds a `[listchildpages]` shortcode that lists the child pages of the current page, or of any page you choose, as a simple linked list. Each item can show the page's featured image and excerpt.
+List Child Pages Shortcode adds a `[listchildpages]` shortcode that lists the child pages of the current page, or of any page you choose, as a simple linked list. Each item can show the page's featured image and excerpt.
 
 * Works in any page, post, widget, or template that renders shortcodes.
 * Choose the parent by ID, slug/path, or the current page.
@@ -77,7 +77,7 @@ Built by [DK New Media](https://dknewmedia.com/). Visit [Martech Zone](https://m
 
 == Installation ==
 
-1. In your WordPress admin, go to **Plugins > Add New**, search for "DK List Child Pages Shortcode", and select **Install Now**. Or upload the `list-child-pages-shortcode` folder to `/wp-content/plugins/`.
+1. In your WordPress admin, go to **Plugins > Add New**, search for "List Child Pages Shortcode", and select **Install Now**. Or upload the `list-child-pages-shortcode` folder to `/wp-content/plugins/`.
 2. Activate the plugin through the **Plugins** screen.
 3. Edit a parent page and add `[listchildpages]` where the list should appear.
 4. Optional: add an excerpt and featured image to each child page to show them in the list.
@@ -118,7 +118,7 @@ Nothing in the database is stored or removed. The plugin has no settings, option
 == Changelog ==
 
 = 1.6.0 =
-* Renamed to DK List Child Pages Shortcode. Author is now DK New Media. The slug, folder, main file, and `[listchildpages]` shortcode are unchanged.
+* Author is now DK New Media. The plugin name, slug, folder, main file, and `[listchildpages]` shortcode are unchanged.
 * Fix: `orderby="menu_order"` now sorts ascending (the Page Attributes order) when no `order` is given, with title as a tie-breaker for pages that share a number.
 * New: `[dknm_list_child_pages]` alias for the shortcode.
 * New: `dknm_lcp_html` output filter. The 1.x `dklcp/listchildpages/html` filter still runs and is marked deprecated.
@@ -172,7 +172,7 @@ Nothing in the database is stored or removed. The plugin has no settings, option
 == Upgrade Notice ==
 
 = 1.6.0 =
-Fixes menu_order sorting and renames the plugin to DK List Child Pages Shortcode. Existing shortcodes keep working.
+Fixes menu_order sorting. Existing shortcodes keep working.
 
 = 1.5.1 =
 * Marks the plugin tested with WordPress 7.1, aligns the stable version, and adds optional orderby/displayimage aliases without changing default output.
