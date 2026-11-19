@@ -1,28 +1,34 @@
-=== List Child Pages Shortcode ===
+=== DK List Child Pages Shortcode ===
 Contributors: douglaskarr
-Tags: page, parent page, child page, shortcode
-Version: 1.5.1
-Stable tag: 1.5.1
+Tags: child pages, subpages, page list, shortcode, parent page
+Requires at least: 4.6
 Tested up to: 7.1
-Requires at least: 3.1
 Requires PHP: 7.4
+Stable tag: 1.6.0
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Donate link: https://dknewmedia.com
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Donate link: https://dknewmedia.com/
 
-A simple plugin to add list of child pages within the content of a parent page. 
+List a page's child pages anywhere with one shortcode, with optional featured images, excerpts, custom ordering, and CSS classes.
 
 == Description ==
 
-I could not find an easy plugin that enabled me to use a shortcode that would enable me to publish a list of child pages under a parent page. So, I built one.
+DK List Child Pages Shortcode (formerly List Child Pages Shortcode) adds a `[listchildpages]` shortcode that lists the child pages of the current page, or of any page you choose, as a simple linked list. Each item can show the page's featured image and excerpt.
+
+* Works in any page, post, widget, or template that renders shortcodes.
+* Choose the parent by ID, slug/path, or the current page.
+* Sort by date, title, menu order (the **Order** field under Page Attributes), and more.
+* Optional featured images at any registered image size.
+* Add your own CSS classes to the list, items, and links.
+* No settings, no database tables, no external services, no tracking.
 
 = Usage =
 
-The shortcode is `[listchildpages]...[/listchildpages]`. It accepts several attributes:
+The shortcode is `[listchildpages]...[/listchildpages]`. `[dknm_list_child_pages]` works the same way. It accepts several attributes:
 
 * **ifempty**: Message or HTML to show if no child pages exist.
-* **order**: `ASC` or `DESC`. Default: `DESC`.
-* **orderby**: Field to order by. Default: `publish_date` (maps to `date`). Also accepts `published` (maps to `date`), `title`, `name`, `modified`, `menu_order`, `ID`, `rand`, `type`, and `author`.
+* **order**: `ASC` or `DESC`. Default: `DESC`, or `ASC` when `orderby="menu_order"`.
+* **orderby**: Field to order by. Default: `publish_date` (maps to `date`). Also accepts `published` (maps to `date`), `title`, `name`, `modified`, `menu_order`, `ID`, `rand`, `type`, and `author`. Use `menu_order` to follow the **Order** numbers set under Page Attributes; pages with the same number sort by title.
 * **displayimage**: Show featured image (`yes|no`). Also accepts `y`, `true`, `1`, and `on`. Default: `no`.
 * **align**: CSS class to apply to the image (`alignleft`, `alignright`, etc.).
 * **ulclass, liclass, aclass**: CSS classes for the list, list items, and links.
@@ -51,18 +57,30 @@ Example 4: Target a parent page by slug and show full-size featured images:
 <h3>Team Sections</h3>
 [/listchildpages]`
 
-Example 5: Explicitly set the parent as the current page and use large images:
+Example 5: Follow the page order set under Page Attributes:
+`[listchildpages orderby="menu_order"]
+<h3>Chapters</h3>
+[/listchildpages]`
+
+Example 6: Explicitly set the parent as the current page and use large images:
 `[listchildpages parent="current" displayimage="yes" size="large"]
 <h3>Subpages</h3>
 [/listchildpages]`
 
-The shortcode accepts all of the Order and Orderby Parameters listed within the [WordPress class reference](https://codex.wordpress.org/Class_Reference/WP_Query#Order_.26_Orderby_Parameters).
+= Developer filters =
 
-Built by [DK New Media](http://www.dknewmedia.com), visit [MarTech](https://martech.zone) to keep up on this plugin and other marketing tools to help you grow your online presence!
+* `dknm_lcp_html` – filter the final HTML. Receives the HTML, the parent page ID, and the normalized attributes.
+* `shortcode_atts_listchildpages` – the standard WordPress filter for the shortcode's attributes.
+* `dklcp/listchildpages/html` – the 1.x output filter. It still runs but is deprecated; use `dknm_lcp_html`.
+
+Built by [DK New Media](https://dknewmedia.com/). Visit [Martech Zone](https://martech.zone/) for updates on this plugin and other marketing tools.
 
 == Installation ==
 
-1. Activate the plugin through the 'Plugins' menu in WordPress.
+1. In your WordPress admin, go to **Plugins > Add New**, search for "DK List Child Pages Shortcode", and select **Install Now**. Or upload the `list-child-pages-shortcode` folder to `/wp-content/plugins/`.
+2. Activate the plugin through the **Plugins** screen.
+3. Edit a parent page and add `[listchildpages]` where the list should appear.
+4. Optional: add an excerpt and featured image to each child page to show them in the list.
 
 == Frequently Asked Questions ==
 
@@ -80,16 +98,32 @@ Within your functions.php file, look for the add_theme_support post-thumbnails l
 
 There are additional class fields for the unordered list tag (ulclass), list item tag (liclass), and the anchor tag (aclass). You can modify the output utilizing your theme's CSS.
 
+= How do I list child pages in my own order? =
+
+Set the **Order** number under **Page Attributes** on each child page (1, 2, 3...), then use `[listchildpages orderby="menu_order"]`. Since 1.6.0 this sorts lowest number first. Add `order="desc"` to reverse it.
+
+= I updated to 1.6.0. Do I need to change my shortcodes? =
+
+No. `[listchildpages]` and every attribute work as before. The only change in output is that `orderby="menu_order"` without an `order` attribute now sorts ascending, which matches the order shown in WordPress.
+
 = What happens if I deactivate or uninstall the plugin? =
 
 Nothing in the database is stored or removed. The plugin has no settings, options, custom tables, or uninstall routine. Deactivate or delete it and your pages, excerpts, and featured images stay as they are. Shortcodes left in content will simply stop rendering until the plugin is activated again.
 
 == Screenshots ==
 
-1. View of the shortcode.
-2. View of the output.
+1. The `[listchildpages]` shortcode in a Shortcode block, sorted by menu order with featured images.
+2. The published list of child pages with featured images and excerpts (Twenty Twenty-Five, with a few lines of theme CSS for the thumbnails).
 
 == Changelog ==
+
+= 1.6.0 =
+* Renamed to DK List Child Pages Shortcode. Author is now DK New Media. The slug, folder, main file, and `[listchildpages]` shortcode are unchanged.
+* Fix: `orderby="menu_order"` now sorts ascending (the Page Attributes order) when no `order` is given, with title as a tie-breaker for pages that share a number.
+* New: `[dknm_list_child_pages]` alias for the shortcode.
+* New: `dknm_lcp_html` output filter. The 1.x `dklcp/listchildpages/html` filter still runs and is marked deprecated.
+* Code now uses the `dknm_lcp_` prefix. The old `dklcp_` function names remain as wrappers.
+* Tested up to WordPress 7.1 (7.1.5). Requires WordPress 4.6 or later.
 
 = 1.5.1 =
 * Align Version and Stable tag so WordPress.org serves the current code.
@@ -136,6 +170,9 @@ Nothing in the database is stored or removed. The plugin has no settings, option
 * Initial Release
 
 == Upgrade Notice ==
+
+= 1.6.0 =
+Fixes menu_order sorting and renames the plugin to DK List Child Pages Shortcode. Existing shortcodes keep working.
 
 = 1.5.1 =
 * Marks the plugin tested with WordPress 7.1, aligns the stable version, and adds optional orderby/displayimage aliases without changing default output.

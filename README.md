@@ -1,6 +1,6 @@
-# List Child Pages Shortcode
+# DK List Child Pages Shortcode
 
-WordPress shortcode `[listchildpages]` that lists child pages of a parent page, with optional featured images and excerpts.
+WordPress shortcode `[listchildpages]` (alias `[dknm_list_child_pages]`) that lists child pages of a parent page, with optional featured images and excerpts.
 
 - WordPress.org: https://wordpress.org/plugins/list-child-pages-shortcode/
 - Support: https://wordpress.org/support/plugin/list-child-pages-shortcode/
@@ -68,9 +68,9 @@ bash bin/deploy.sh --commit # publish
 
 ## Current WordPress.org state
 
-Git `main` is **1.5.1** (not released yet). WordPress.org still serves **1.4.0** as the stable zip. Trunk on SVN is 1.4.1, and a `tags/1.5.0` folder exists with 1.4.1 headers.
+WordPress.org serves **1.5.1**. Branch `release/1.6.0` prepares **1.6.0** (rename to DK List Child Pages Shortcode, `dknm_lcp_` prefix with `dklcp_` wrappers in `includes/legacy.php`, and the `orderby="menu_order"` fix). The slug, folder, main file `dklcp-shortcode.php`, and text domain stay the same so existing installs keep the plugin active on update.
 
-Publishing 1.5.1 (GitHub Release + SVN secrets) is what updates the directory listing, search visibility (`Tested up to: 7.1`), and the download zip.
+Build a release zip with `bash bin/build.sh [output-dir]` (uses `.distignore`).
 
 **Required before every WordPress.org release:** Plugin Check (PCP) must pass with no errors.
 

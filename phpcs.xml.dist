@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="List Child Pages Shortcode">
-	<description>WordPress coding standards for List Child Pages Shortcode.</description>
+<ruleset name="DK List Child Pages Shortcode">
+	<description>WordPress coding standards for DK List Child Pages Shortcode.</description>
 
 	<file>.</file>
 
@@ -14,11 +14,21 @@
 	<arg value="sp"/>
 	<arg name="parallel" value="4"/>
 
-	<config name="minimum_supported_wp_version" value="6.0"/>
+	<config name="minimum_supported_wp_version" value="4.6"/>
 	<config name="testVersion" value="7.4-"/>
 
 	<rule ref="WordPress">
 		<exclude name="WordPress.Files.FileName"/>
 	</rule>
 	<rule ref="PHPCompatibilityWP"/>
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array"><element value="list-child-pages-shortcode"/></property>
+		</properties>
+	</rule>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array"><element value="dknm_lcp"/></property>
+		</properties>
+	</rule>
 </ruleset>
