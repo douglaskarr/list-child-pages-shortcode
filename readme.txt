@@ -4,10 +4,10 @@ Tags: child pages, subpages, page list, shortcode, parent page
 Requires at least: 4.6
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Donate link: https://dknewmedia.com/
+Donate link: https://dknewmedia.com/?utm_source=wordpress.org&utm_medium=plugin&utm_campaign=list-child-pages-shortcode&utm_content=donate
 
 List a page's child pages anywhere with one shortcode, with optional featured images, excerpts, custom ordering, and CSS classes.
 
@@ -79,7 +79,7 @@ Example 6: Explicitly set the parent as the current page and use large images:
 * `shortcode_atts_listchildpages` – the standard WordPress filter for the shortcode's attributes.
 * `dklcp/listchildpages/html` – the 1.x output filter. It still runs but is deprecated; use `dknm_lcp_html`.
 
-Built by [DK New Media](https://dknewmedia.com/). Visit [Martech Zone](https://martech.zone/) for updates on this plugin and other marketing tools.
+Built by [DK New Media](https://dknewmedia.com/?utm_source=wordpress.org&utm_medium=plugin&utm_campaign=list-child-pages-shortcode&utm_content=readme-author). Visit [Martech Zone](https://martech.zone/wordpress-list-child-pages-plugin/?utm_source=wordpress.org&utm_medium=plugin&utm_campaign=list-child-pages-shortcode&utm_content=readme-docs) for updates on this plugin and other marketing tools.
 
 == Installation ==
 
@@ -122,6 +122,9 @@ The plugin stores nothing in the database. An uninstall.php file defensively rem
 2. The published list of child pages with featured images and excerpts (Twenty Twenty-Five, with a few lines of theme CSS for the thumbnails).
 
 == Changelog ==
+
+= 1.6.3 =
+* Author, documentation, donate, and readme links now include campaign tracking. The Martech Zone link points at the plugin's documentation article.
 
 = 1.6.2 =
 * New WordPress.org banner and animated icon, with a consistent DK layout and a "Developed by Martech Zone" badge.
@@ -183,6 +186,9 @@ The plugin stores nothing in the database. An uninstall.php file defensively rem
 * Initial Release
 
 == Upgrade Notice ==
+
+= 1.6.3 =
+Author and documentation links now include campaign tracking. No shortcode changes.
 
 = 1.6.2 =
 New WordPress.org banner and animated icon, and an uninstall.php cleanup routine. No shortcode changes.

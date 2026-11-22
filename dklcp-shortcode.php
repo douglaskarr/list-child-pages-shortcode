@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name:       List Child Pages Shortcode
- * Plugin URI:        https://martech.zone/wordpress-list-child-pages-plugin/
+ * Plugin URI:        https://martech.zone/wordpress-list-child-pages-plugin/?utm_source=wordpress.org&utm_medium=plugin&utm_campaign=list-child-pages-shortcode&utm_content=plugin-uri
  * Description:       List a page's child pages anywhere with the [listchildpages] shortcode, with optional featured images, excerpts, ordering, and CSS classes.
- * Version:           1.6.2
+ * Version:           1.6.3
  * Requires at least: 4.6
  * Requires PHP:      7.4
  * Author:            DK New Media
- * Author URI:        https://dknewmedia.com/
+ * Author URI:        https://dknewmedia.com/?utm_source=wordpress.org&utm_medium=plugin&utm_campaign=list-child-pages-shortcode&utm_content=author
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       list-child-pages-shortcode
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DKNM_LCP_VERSION', '1.6.2' );
+define( 'DKNM_LCP_VERSION', '1.6.3' );
 define( 'DKNM_LCP_SHORTCODE', 'listchildpages' );
 define( 'DKNM_LCP_SHORTCODE_ALIAS', 'dknm_list_child_pages' );
 
