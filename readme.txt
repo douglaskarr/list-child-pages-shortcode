@@ -2,7 +2,7 @@
 Contributors: douglaskarr
 Tags: child pages, subpages, page list, shortcode, parent page
 Requires at least: 4.6
-Tested up to: 7.1
+Tested up to: 7.2
 Requires PHP: 7.4
 Stable tag: 1.6.4
 License: GPLv2 or later
