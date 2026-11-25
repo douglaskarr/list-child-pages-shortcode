@@ -1,8 +1,8 @@
 {
   "slug": "list-child-pages-shortcode",
-  "name": "List Child Pages Shortcode",
+  "name": "DK List Child Pages Shortcode",
   "name_lines": [
-    "List Child Pages",
+    "DK List Child Pages",
     "Shortcode"
   ],
   "description": "List a page's child pages with one shortcode.",

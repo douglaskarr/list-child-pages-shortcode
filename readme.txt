@@ -1,10 +1,10 @@
-=== List Child Pages Shortcode ===
+=== DK List Child Pages Shortcode ===
 Contributors: douglaskarr
 Tags: child pages, subpages, page list, shortcode, parent page
 Requires at least: 4.6
-Tested up to: 7.1
+Tested up to: 7.2
 Requires PHP: 7.4
-Stable tag: 1.6.3
+Stable tag: 1.6.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://dknewmedia.com/?utm_source=wordpress.org&utm_medium=plugin&utm_campaign=list-child-pages-shortcode&utm_content=donate
@@ -13,7 +13,7 @@ List a page's child pages anywhere with one shortcode, with optional featured im
 
 == Description ==
 
-List Child Pages Shortcode adds a `[listchildpages]` shortcode that lists the child pages of the current page, or of any page you choose, as a simple linked list. Each item can show the page's featured image and excerpt.
+DK List Child Pages Shortcode adds a `[listchildpages]` shortcode that lists the child pages of the current page, or of any page you choose, as a simple linked list. Each item can show the page's featured image and excerpt.
 
 * Works in any page, post, widget, or template that renders shortcodes.
 * Choose the parent by ID, slug/path, or the current page.
@@ -83,7 +83,7 @@ Built by [DK New Media](https://dknewmedia.com/?utm_source=wordpress.org&utm_med
 
 == Installation ==
 
-1. In your WordPress admin, go to **Plugins > Add New**, search for "List Child Pages Shortcode", and select **Install Now**. Or upload the `list-child-pages-shortcode` folder to `/wp-content/plugins/`.
+1. In your WordPress admin, go to **Plugins > Add New**, search for "DK List Child Pages Shortcode", and select **Install Now**. Or upload the `list-child-pages-shortcode` folder to `/wp-content/plugins/`.
 2. Activate the plugin through the **Plugins** screen.
 3. Edit a parent page and add `[listchildpages]` where the list should appear.
 4. Optional: add an excerpt and featured image to each child page to show them in the list.
@@ -122,6 +122,10 @@ The plugin stores nothing in the database. An uninstall.php file defensively rem
 2. The published list of child pages with featured images and excerpts (Twenty Twenty-Five, with a few lines of theme CSS for the thumbnails).
 
 == Changelog ==
+
+= 1.6.4 =
+* Renamed the plugin to DK List Child Pages Shortcode. The slug, folder, shortcode, settings, and hooks are unchanged, so existing installs keep working.
+* Refreshed the WordPress.org banner to show the new name, using the shared DK center safe-zone layout.
 
 = 1.6.3 =
 * Author, documentation, donate, and readme links now include campaign tracking. The Martech Zone link points at the plugin's documentation article.
@@ -186,6 +190,9 @@ The plugin stores nothing in the database. An uninstall.php file defensively rem
 * Initial Release
 
 == Upgrade Notice ==
+
+= 1.6.4 =
+The display name is now DK List Child Pages Shortcode. Nothing changes functionally; existing shortcodes and settings keep working.
 
 = 1.6.3 =
 Author and documentation links now include campaign tracking. No shortcode changes.
